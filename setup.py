@@ -7,13 +7,14 @@ __version__ = '0.0.0'
 
 
 requires = [
+    'pyramid',
+    'pyramid_tm',
+    'pyramid_sqlalchemy',
+    'pyramid_jinja2',
+    'waitress',
     'python-dateutil',
     'psycopg2',
-    'jinja2',
-    'sqlalchemy',
     'gevent',
-    'bottle-sqlalchemy',
-    'bottle',
     'psycogreen',
     'findex-common',
     'click'
@@ -42,6 +43,9 @@ setup(
     include_package_data=True,
     zip_safe=False,
     entry_points={
+        'paste.app_factory': [
+            'main=findex_gui:main',
+        ],
         'console_scripts': [
             'findex-gui=findex_gui.daemon:cli',
         ],

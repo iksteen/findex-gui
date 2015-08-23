@@ -3,10 +3,15 @@ from datetime import datetime
 from importlib import import_module
 
 from sqlalchemy.orm import sessionmaker
+from pyramid_sqlalchemy import Session
 
 from findex_gui.db.orm import Options
 from findex_common import utils
-from findex_common.exceptions import ThemeException
+#from findex_common.exceptions import ThemeException
+
+
+class ThemeException(Exception):
+    pass
 
 
 class Theme():
@@ -37,8 +42,7 @@ class Theme():
 
 
 class Themes():
-    def __init__(self, db):
-        self.db = sessionmaker(bind=db.engine)()
+    def __init__(self):
         self.theme_dir = os.path.join(os.path.dirname(__file__), '..', '..', 'static', 'themes')
         self.themes = {}
 
@@ -84,17 +88,15 @@ class Themes():
             if (datetime.now() - self.active_theme['date']).total_seconds() <= 300:
                 return self.active_theme['name']
 
-        return self.db.query(Options).filter(Options.key == 'theme_active').first()
+        return Session.query(Options).filter(Options.key == 'theme_active').first()
 
     def change_theme(self, name):
         theme = self.get_theme()
 
         if not theme:
-            self.db.add(Options(key='theme_active', val=name))
-            self.db.commit()
+            Session.add(Options(key='theme_active', val=name))
         elif theme.val != name:
             theme.val = name
-            self.db.commit()
 
         template_path = os.path.join(self.theme_dir, name, 'templates')
         bottle.TEMPLATE_PATH = [template_path]

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-{% include "helpers/resources.html" %}
+{% include "helpers/resources.jinja2" %}
 </head>
 <body>
     <style>
@@ -37,8 +37,8 @@
         }
     </style>
 
-    {% include "navigation/top_browse.html" %}
-    {% include "navigation/bottom_default.html" %}
+    {% include "navigation/top_browse.jinja2" %}
+    {% include "navigation/bottom_default.jinja2" %}
 
 
     <div id="bg_container_browse" class="bg_container"></div>

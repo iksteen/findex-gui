@@ -1,10 +1,10 @@
+pyramid
+pyramid_sqlalchemy
+pyramid_jinja2
+waitress
 python-dateutil
 psycopg2
-jinja2
-sqlalchemy
 gevent
-bottle
-bottle-sqlalchemy
 psycogreen
 findex-common
 click

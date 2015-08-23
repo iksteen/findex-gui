@@ -1,63 +1,28 @@
 import sqlalchemy as sql
-from sqlalchemy import or_
-import sqlalchemy.pool as pool
-import bottle_sqlalchemy as sqlalchemy
-from sqlalchemy import create_engine, Column, Sequence, Index
-from sqlalchemy.ext.declarative import declarative_base
+import sqlalchemy.pool as sql_pool
+from pyramid_sqlalchemy import BaseObject as Base, init_sqlalchemy
+from sqlalchemy import create_engine, Column, Index
 from sqlalchemy.dialects.postgresql import INET
 import random
-import psycogreen
 import psycopg2
 
-from gevent import monkey
-monkey.patch_all()
 
-import psycogreen.gevent
-psycogreen.gevent.patch_psycopg()
- 
-Base = declarative_base()
+def initialize_pyramid_sqlalchemy(config):
+    engine_configs = config.registry.settings['findex.db_hosts'].split(',')
 
-
-class Postgres():
-    def __init__(self, cfg, app=None):
-        self.cfg = cfg
-
-        self._db_hosts = self.cfg['db']['hosts']
-        self._db_port = self.cfg['db']['port']
-        self._db_database = self.cfg['db']['database']
-        self._db_user = self.cfg['db']['username']
-        self._db_pass = self.cfg['db']['password']
-
-        if not isinstance(self._db_hosts, list):
-            self._db_hosts = [self._db_hosts]
-        else:
-            if ',' in self._db_hosts: self._db_hosts = self._db_hosts.split(',')
-
-        self.pool = pool.QueuePool(self._getconn, max_overflow=1, pool_size=2, echo=self.cfg['general']['debug'])
-        self.engine = create_engine('postgresql+psycopg2://', pool=self.pool, echo=self.cfg['general']['debug'])
-
-        self.plugin = sqlalchemy.Plugin(
-            self.engine,
-            Base.metadata,
-            keyword='db',
-            create=True,
-            commit=False,
-            use_kwargs=False
-        )
-
-        if app:
-            Base.metadata.create_all(self.engine)
-            app.install(self.plugin)
-
-    def _getconn(self):
-        random.shuffle(self._db_hosts)
-        for host in self._db_hosts:
+    def get_connection():
+        random.shuffle(engine_configs)
+        for engine_config in engine_configs:
             try:
-                return psycopg2.connect(host=host, user=self._db_user, dbname=self._db_database, password=self._db_pass)
+                return psycopg2.connect(engine_config)
             except psycopg2.OperationalError as e:
-                print 'Failed to connect to %s: %s' % (host, e)
+                print 'Failed to connect to %s: %s' % (engine_config, e)
         print 'Panic! No servers left.'
         return None
+
+    pool = sql_pool.QueuePool(get_connection, max_overflow=1, pool_size=2)
+    engine = create_engine('postgresql+psycopg2://', pool=pool)
+    init_sqlalchemy(engine)
 
 
 class Files(Base):

@@ -67,7 +67,7 @@ a:hover{
 */
 
 .hero_container{
-    background: url('/static/themes/findex_official/img/bg_blue2.jpg');
+    background: url('/theme/img/bg_blue2.jpg');
     background-size: cover;
     width: 100%;
     height: auto;
@@ -505,7 +505,7 @@ div.bg_container{
     width:90px;
     height:70px;
     float:left;
-    background:url('/static/themes/findex_official/img/arrowdown3.png');
+    background:url('/theme/img/arrowdown3.png');
 }
 .hero_search_container>.search{
     height:70px;

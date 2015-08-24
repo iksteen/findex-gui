@@ -1,6 +1,7 @@
 import jinja2
 from datetime import datetime
 from urllib import quote_plus
+from pyramid_sqlalchemy import Session
 
 from findex_gui.db.orm import Files, Hosts
 from findex_common.exceptions import SearchException
@@ -8,11 +9,8 @@ from findex_gui.controllers.findex.findex import Findex
 
 
 class Searcher():
-    def __init__(self, cfg, db, env):
-        self.cfg = cfg
-        self.db = db
-        self.env = env
-        self.findex = Findex(self.db)
+    def __init__(self):
+        self.findex = Findex(Session)
 
     def _key_check(self, keyword):
         if isinstance(keyword, dict):
@@ -30,7 +28,7 @@ class Searcher():
 
         return keyword
 
-    def search(self, vars):
+    def search(self, request, vars):
         val = self._key_check(vars)
         val = val.lower()
 
@@ -38,7 +36,7 @@ class Searcher():
         start_dbtime = datetime.now()
 
         # to-do: move this to API (or make api.py use this class)
-        q = self.db.query(Files)
+        q = Session.query(Files)
 
         # if this is later set with Files.<column_name>, it will be sorted on this.
         sort = ''
@@ -76,7 +74,7 @@ class Searcher():
                 if not dhosts[0] == '*':
                     host_ids = []
                     for host in dhosts:
-                        host_results = self.db.query(Hosts).filter(Hosts.address==host).filter(Hosts.protocol.in_(sdata['protocols'])).all()
+                        host_results = Session.query(Hosts).filter(Hosts.address==host).filter(Hosts.protocol.in_(sdata['protocols'])).all()
 
                         for host_result in host_results:
                             host_ids.append(host_result.id)
@@ -200,7 +198,7 @@ class Searcher():
             setattr(r, 'host', host)
 
         results['data'] = self.findex.set_humanize(results['data'])
-        results['data'] = self.findex.set_icons(env=self.env, files=results['data'])
+        results['data'] = self.findex.set_icons(request, files=results['data'])
         sdata['filtered'] = filtered
 
         return {'sdata': sdata, 'results': results, 'key': jinja2.escape(vars['key'][0])}

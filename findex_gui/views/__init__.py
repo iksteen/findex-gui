@@ -1,6 +1,10 @@
 from pyramid.view import view_config
 from pyramid.response import Response, FileResponse
+from pyramid.renderers import render_to_response
+from findex_common import SearchException
 import pkg_resources
+from findex_gui.controllers.request import var_parse
+from findex_gui.controllers.views.searcher import Searcher
 
 
 @view_config(route_name='robots')
@@ -29,21 +33,32 @@ def terms(request):
     return FileResponse(icon, content_type='text/plain', request=request)
 
 
-@view_config(route_name='api', renderer='main/api.jinja2')
-def api(request):
-    return {}
+@view_config(route_name='search', renderer='main/search.jinja2')
+def search(request):
+    search_vars = var_parse(request.params)
+    message = ''
 
+    if 'key' in search_vars:
+        try:
+            data = Searcher().search(request, search_vars)
 
-@view_config(route_name='research', renderer='main/research.jinja2')
-def research(request):
-    return {}
+            results = {-2: [], -1: [], 0: [], 1: [], 2: [], 3: [], 4: []}
+            for f in data['results']['data']:
+                if f.file_isdir:
+                    results[-2].append(f)
+                else:
+                    results[f.file_format].append(f)
 
+            results[-1] = data['results']['data']
 
-@view_config(route_name='research-mass-ftp-crawling', renderer='main/research-mass-ftp-crawling.jinja2')
-def research_mass_ftp_crawling(request):
-    return {}
+            data['results']['data'] = results
 
+            return render_to_response('main/search_results.jinja2', {'data': data, 'exception': None}, request=request)
+        except SearchException as ex:
+            message = str(ex)
+        #except:
+        #    message = 'Something went wrong \:D/'
 
-@view_config(route_name='documentation', renderer='main/documentation.jinja2')
-def documentation(request):
-    return {}
+    return {
+        'message': message,
+    }

@@ -29,8 +29,8 @@
     <script type="text/javascript" src="http://mottie.github.com/tablesorter/js/jquery.tablesorter.js"></script>
 
     <!-- Findex -->
-    <script src="/static/js/findex_core.js"></script>
-    <script src="/static/themes/findex_official/js/findex.js"></script>
-    <link href="/static/themes/findex_official/css/findex.css" rel="stylesheet">
+    <script src="{{ request.static_url('findex_gui:static/js/findex_core.js') }}"></script>
+    <script src="{{ request.static_url('findex_gui:themes/findex_official/static/js/findex.js') }}"></script>
+    <link href="{{ request.static_url('findex_gui:themes/findex_official/static/css/findex.css') }}" rel="stylesheet">
 
-    <script src="/static/js/jquery.highlight.js"></script>
+    <script src="{{ request.static_url('findex_gui:static/js/jquery.highlight.js') }}"></script>

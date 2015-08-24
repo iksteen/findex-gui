@@ -1,12 +1,9 @@
 from importlib import import_module
 
-from sqlalchemy import and_, asc, desc
-from sqlalchemy.dialects import mysql, postgresql
+from sqlalchemy import and_
 
 from findex_gui.db.orm import Files, Hosts
 from findex_common.utils import DataObjectManipulation
-
-import findex_gui.controllers.findex.themes as themes
 
 
 class Findex(object):
@@ -42,10 +39,10 @@ class Findex(object):
             setattr(f, 'file_url', file_url)
         return results
 
-    def set_icons(self, env, files):
+    def set_icons(self, request, files):
         try:
-            theme_icon_module = import_module('static.themes.%s.bin.icons' % env['theme_name'])
-            return theme_icon_module.set_icons(env=env, files=files)
+            theme_icon_module = import_module('static.themes.%s.bin.icons' % request.theme_name)
+            return theme_icon_module.set_icons(request=request, files=files)
         except Exception as ex:
             for f in files:
                 f.img_icon = '/static/img/error.png'

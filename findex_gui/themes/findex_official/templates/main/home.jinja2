@@ -31,19 +31,19 @@
 
         <div id="hero_icon_row" class="row" style="padding-top:20px;">
             <div class="col-md-12 text-center">
-                <a href="/research/" id="hero_icon" class="col-md-3 hero_icon">
+                <a href="{{ request.route_url('research') }}" id="hero_icon" class="col-md-3 hero_icon">
                     <i class="fa fa-bar-chart"></i>
                     <span>
                         Findex can gather files from FTP, HTTP and SMB resources all over the world
                     </span>
                 </a>
-                <a href="/documentation/" id="hero_icon" class="col-md-3 hero_icon">
+                <a href="{{ request.route_url('documentation') }}" id="hero_icon" class="col-md-3 hero_icon">
                     <i class="fa fa-cogs"></i>
                     <span>
                         Findex is fast and runs on (almost) any machine capable of running Linux.
                     </span>
                 </a>
-                <a href="/api" id="hero_icon" class="col-md-3 hero_icon">
+                <a href="{{ request.route_url('api') }}" id="hero_icon" class="col-md-3 hero_icon">
                     <i class="fa fa-connectdevelop"></i>
                     <span>
                         Use the REST API to implement your own file searching tool
@@ -90,19 +90,19 @@
             </div>
         </div>
         <div id="home_cta_row" class="row" style="padding-top:30px;">
-            <a href="/documentation/" class="col-lg-4">
+            <a href="{{ request.route_url('documentation') }}" class="col-lg-4">
                 <div class="well">
                     <h4>Installation Guide</h4>
                     <p>Hosting your own instance is easy. All you need is a Linux box and a Postgres database.</p>
                 </div>
             </a>
-            <a href="/documentation/" class="col-lg-4">
+            <a href="{{ request.route_url('documentation') }}" class="col-lg-4">
                 <div class="well">
                     <h4>Distributed Crawling</h4>
                     <p>Findex supports distributed crawling out of the box.</p>
                 </div>
             </a>
-            <a href="/research/" class="col-lg-4">
+            <a href="{{ request.route_url('research') }}" class="col-lg-4">
                 <div class="well">
                     <h4>Research</h4>
                     <p>We scanned a country on port 21 and analyzed the data we found.</p>

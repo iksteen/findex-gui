@@ -6,7 +6,6 @@ def includeme(config):
     config.add_theme('findex_official')
 
     config.include('pyramid_jinja2')
-    config.add_jinja2_search_path('findex_gui:themes/findex_official/templates')
 
     config.add_request_method(theme_static, 'theme_static')
 

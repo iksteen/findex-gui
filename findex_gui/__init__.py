@@ -21,13 +21,11 @@ class ThemePredicate(object):
         self.val = val
 
     def text(self):
-        print self.val
         return 'theme = %s' % (self.val,)
 
     phash = text
 
     def __call__(self, context, request):
-        print request.theme, self.val
         return request.theme == self.val
 
 

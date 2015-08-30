@@ -1,7 +1,7 @@
 from findex_common import SearchException
 from pyramid.renderers import render_to_response
 from pyramid.view import view_config
-from findex_gui.views import search as findex_search
+from findex_gui.search import search as findex_search
 
 
 TMPL_PREFIX = 'findex_gui:themes/findex_official/templates/main/'
